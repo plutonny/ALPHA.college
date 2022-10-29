@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta                                       charset="UTF-8">
+        <meta   http-equiv="Permissions-Policy"     content="interest-cohort=()">
+        <meta   http-equiv="Cache-Control"          content="no-cache">
+        <!--<meta   http-equiv="Refresh"            content="30">-->
+        <meta   http-equiv="Pragma"                 content="no-cache">
+        <meta   name="viewport"                     content="width=device-width, initial-scale=1.0">
+        <meta   name="author"                       content="Plutonny">
+        <meta   name="keywords"                     content="КСК-11, кск, кск 11, акт кск, акт">
+        <meta   name="description"                  content="Страница группы КСК-11">
+        <meta   name="theme-color" id="theme-color" content="#202020">
+        <title  id="title-page"                     >КСК-11 | главная</title>
+        <link   rel="manifest"                      href="manifest.json">
+        
+        <link   rel="preload prefetch stylesheet"   href="static/load.css?cache=400" as="style">
+        <link   rel="preload prefetch stylesheet"   href="static/main.css?cache=400" as="style">
+        <link   rel="icon"                          href="static/g-icon.png?cache=400">
+
+        <script>
+            function addScript(src){ var script = document.createElement('script'); script.type = 'text/javascript'; script.src = src; script.async = false; document.head.appendChild(script) }
+            addScript(`static/frames.js?t=${Date.now()}`)
+        </script>
+
+        <link   rel="preconnect"                    href="//fonts.googleapis.com">
+        <link   rel="preconnect"                    href="//fonts.gstatic.com" crossorigin>
+        <link   rel="stylesheet"                    href="//fonts.googleapis.com/css2?family=Montserrat&display=swap">
+        <link   rel="stylesheet"                    href="//fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
+        <link   rel="preload prefetch stylesheet"   href="//fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" as="style">
+        <style>      .material-symbols-rounded      { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 26 }</style>
+        
+        <script lang="javascript"                   src="//cdn.sheetjs.com/xlsx-0.18.11/package/dist/xlsx.full.min.js"></script>
+        <script type="text/javascript"              src="//cdn.jsdelivr.net/npm/eruda"></script>
+
+        <script type="text/javascript"              src="//lib.plutonny.ru/plutonny.js/v1.0.js?cache=400"></script>
+        <script type="text/javascript"              src="//lib.plutonny.ru/luxon.js?cache=400"></script>
+        <script type="text/javascript"              src="//lib.plutonny.ru/solar.js?cache=400"></script>
+        
+        <style  id="root-colors-theme"              >#thMoon, #thSun { display: none; }</style>
+
+        <script>
+            try { var URLDIR = window.location.href.split('#')[1].split('/') } catch { console.log('index.html -> no dir information') }
+            try { var URLDATA = plutonny.get.URLAttributes(window.location.href) } catch { console.error('index.html -> plutonny.js are not found') }
+        </script>
+
+        <script type="text/javascript">
+            
+            "use strict";
+    
+            var CURRDATE = new Date()
+
+            var BETA = window.location.href.toLowerCase().includes('beta')
+            var ALPHA = window.location.href.toLowerCase().includes('alpha')
+
+            if (BETA || ALPHA) { eruda.init() }
+
+            var siteVersion = '4.0.0'
+            var siteBuild = '1'
+
+
+            /**
+            *  Creating links
+            * 
+            *      example:
+            *          {
+            *              type:   str  ('assets' or 'HTML')
+            *              file:   str  (from type of file, example: 'frames.js' or 'simple/')
+            *              noVer:  bool (ignore beta and alpha repository)
+            *          }
+            * 
+            */
+            function link(to) {
+                try {
+                    var isBeta = (BETA && (!to.noVer)),
+                        isAlpha = (ALPHA && (!to.noVer))
+                    if (window.location.href.includes('plutonny.ru')) {
+                        if (to.type == 'assets') return `https://${isBeta ? 'beta.' : isAlpha ? 'alpha.' : ''}college.plutonny.ru/static/${to.file}?t=${Date.now()}`
+                        if (to.type == 'HTML')   return `https://${isBeta ? 'beta.' : isAlpha ? 'alpha.' : ''}college.plutonny.ru/${to.file}`
+                    }
+                    if (window.location.href.includes('127.0.0.1')) {
+                        if (to.type == 'assets') return `http://127.0.0.1:5500/${isBeta ? 'BETA.' : isAlpha ? 'ALPHA.' : 'RELEASE.'}college/static/${to.file}?t=${Date.now()}`
+                        if (to.type == 'HTML')   return `http://127.0.0.1:5500/${isBeta ? 'BETA.' : isAlpha ? 'ALPHA.' : 'RELEASE.'}college/${to.file}`
+                    }
+                } catch (e) {
+                    plutonny.console.error('index.html -> link()', e)
+                }
+            }
+
+            // Week variable: num week and names (EN, RU, alternative)
+            var WEEK = { num: luxon.DateTime.now().weekNumber }
+            WEEK.name = {
+                RU: WEEK.num % 2 == 1 ? 'желтая' : 'зеленая',
+                EN: WEEK.num % 2 == 1 ? 'yellow' : 'green',
+                alt: {
+                    RU: WEEK.num % 2 == 1 ? 'зеленая' : 'желтая',
+                    EN: WEEK.num % 2 == 1 ? 'green' : 'yellow',
+                }
+            }
+
+
+            /**
+             *  Outputted modal (div id "modal" need)
+             * 
+             *      "content" - HTML code for output on fullscreen
+             * 
+             */
+            async function modal(content) {
+                try {
+                    await plutonny.sleep(200)
+                    if (deviceStorage.getItem('theme') == 'dark')  document.getElementById('theme-color').content = '#2a2a2a'
+                    if (deviceStorage.getItem('theme') == 'light') document.getElementById('theme-color').content = '#9b9b9b'
+                    plutonny.output('modal', `
+                        <div class="max-modal">
+                            <style>
+                                div#modal { position: fixed; height: 100%; width: 100%; background-color :#40404075; z-index: 99; }
+                                div.max-modal { height: 100%; display: flex; justify-content: center; align-items: center; z-index: 100; }
+                            </style>
+                            ${content}
+                        </div>
+                    `) 
+                    return true
+                } catch (e) {
+                    plutonny.console.error('index.html -> modal()', e)
+                    return false
+                }
+            }
+
+            if (BETA)  siteVersion += ' beta'
+            if (ALPHA) siteVersion += ' alpha'
+        </script>
+
+        <script type="text/javascript">
+            /**
+             *  Work with theme in site (style id "root-colors-theme" need)
+             *      
+             *      theme.prepare() returned current theme in bool format (true - dark theme, false - light theme)
+             *      theme.load() loaded theme (used in storage.js and in modals)
+             *      theme.change() changed theme to reverse and load theme again
+             * 
+             */
+            var theme = {
+                light: `:root {
+                    --text-color:                 #101520 !important;
+                    --text-color-active:          #353535 !important;
+                    --bg-color:                   #f5f5f5 !important;
+                    --bg-color-navbar:            #e3e3e3 !important;
+                    --bg-color-header:            #e9e9e9 !important;
+                    --button-color:               #dddddd !important;
+                    --button-color-hover:         #d2d2d2 !important;
+                    --button-color-active:        #c0c0c0 !important;
+                    --button-color-header:        #f5f5f5 !important;
+                    --button-color-hover-header:  #f0f0f0 !important;
+                    --button-color-active-header: #e0e0e0 !important;
+                    --box-shadow-color:           #a5a5a5 !important;
+                    --icon-color:                 #707070 !important;
+                    --ui-green:                   #7cf779 !important;
+                    --ui-yellow:                  #f3ee67 !important;
+                    --week-color:                 var(--${WEEK.name.EN})    !important;
+                    --week-ui-color:              var(--ui-${WEEK.name.EN}) !important;
+                }`,
+                dark: `:root {
+                    --text-color:                 #f4f4f4 !important;
+                    --text-color-active:          #a9a9a9 !important;
+                    --bg-color:                   #000000 !important;
+                    --bg-color-navbar:            #111111 !important;
+                    --bg-color-header:            #181818 !important;
+                    --button-color:               #303030 !important;
+                    --button-color-hover:         #3a3a3a !important;
+                    --button-color-active:        #454545 !important;
+                    --button-color-header:        #020202 !important;
+                    --button-color-hover-header:  #0a0a0a !important;
+                    --button-color-active-header: #121212 !important;
+                    --box-shadow-color:           #080808 !important;
+                    --icon-color:                 #707070 !important;
+                    --ui-green:                   #114110 !important;
+                    --ui-yellow:                  #454306 !important;
+                    --week-color:                 var(--${WEEK.name.EN})    !important;
+                    --week-ui-color:              var(--ui-${WEEK.name.EN}) !important;
+                }`,
+                prepare: function() {
+
+                    if (localStorage.getItem('THEME-type') == null || localStorage.getItem('THEME-type') == '')
+                        { plutonny.console.warn('global.js -> theme.prepare()', 'theme type is undefined, set to default'); localStorage.setItem('THEME-type', 1) }
+
+                    if (localStorage.getItem('THEME') == null || localStorage.getItem('THEME') == '')
+                        { plutonny.console.warn('global.js -> theme.prepare()', 'theme is undefined, set theme to light'); localStorage.setItem('THEME', 'light') }
+
+                    if (localStorage.getItem('THEME') != 'light' && localStorage.getItem('THEME') != 'dark')
+                        { plutonny.console.warn('global.js -> theme.prepare()', 'theme is incorrect, set theme to light'); localStorage.setItem('THEME', 'light') }
+
+                    if (localStorage.getItem('THEME-EnThBt') == null || localStorage.getItem('THEME-EnThBt') == '')
+                        { plutonny.console.warn('global.js -> theme.prepare()', 'theme button is undefined, turned it on'); localStorage.setItem('THEME-EnThBt', true) }
+
+                    if (localStorage.getItem('THEME-type') == 2)
+                        { localStorage.setItem('THEME-EnThBt', false) }
+
+                    try {
+                        var onDateSunriseSunset = SunCalc.getTimes(CURRDATE, 64.4, 40.4)
+                        if (localStorage.getItem('THEME-type') == 2) { 
+                            if (onDateSunriseSunset.sunrise < CURRDATE && CURRDATE < onDateSunriseSunset.sunset) { localStorage.setItem('THEME', 'light') } 
+                            else                                                                                 { localStorage.setItem('THEME', 'dark') } 
+                        }
+                    } catch (e) { plutonny.console.error('global.js -> theme.prepare()', e) }
+                    if (localStorage.getItem('THEME') == 'light') return false
+                    if (localStorage.getItem('THEME') == 'dark')  return true
+                },
+
+                change: function() {
+                    if (theme.prepare()) localStorage.setItem('THEME', 'light')
+                    else                 localStorage.setItem('THEME', 'dark')
+                    theme.load()
+                }, 
+
+                load: async function() {
+                    if (theme.prepare()) { document.getElementById('root-colors-theme').innerHTML = `${theme.dark} #thMoon { display: none; }`; await plutonny.sleep(65); document.getElementById('theme-color').content = '#181818' }
+                    else                 { document.getElementById('root-colors-theme').innerHTML = `${theme.light} #thSun { display: none; }`; await plutonny.sleep(65); document.getElementById('theme-color').content = '#e9e9e9' }
+                },
+
+                default: async function() {
+                    document.getElementById('root-colors-theme').innerHTML = `#thSun, #thMoon { display: none; }`; await plutonny.sleep(65); document.getElementById('theme-color').content = '#202020'
+                }
+
+            }; theme.load()
+        </script>
+
+    </head>
+    <body>
+
+        <noscript>Включите JavaScript чтобы пользоваться сайтом</noscript>
+
+        <div id="loading" class="loading">
+            <style>
+                .loading {
+                    z-index: 100;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    align-content: center;
+                    height: 100vh;
+                    width: 100vw;
+                    background-color: var(--bg-color);
+                }
+                html, body { margin: 0; overflow: hidden; }
+            </style>
+            <div class="loader">
+                <svg viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="32"></circle>
+                </svg>
+            </div>
+        </div>
+
+        <div class="content" id="content">
+            <div class="header" id="header">
+                <script>FRAMES.header({textCenter: 'Альфа версия', buttonTheme: true, buttonBack: false, enableHR: false, HTMLAfter: ''})</script>
+            </div>
+            <div class="navbar" id="navbar">
+                <script>FRAMES.navbar(URLDIR[1])</script>
+            </div>
+        </div>
+
+        <iframe src="https://cors-anywhere.herokuapp.com/corsdemo" frameborder="0"></iframe>
+
+        <script>
+            var NextDay = new Date()
+            var pairDayChanges = `${NextDay.getDate() < 10 ? `0${NextDay.getDate()}` : `${NextDay.getDate()}`}.${(NextDay.getMonth() + 1) < 10 ? `0${NextDay.getMonth() + 1}` : `${NextDay.getMonth() + 1}`}`
+            var linkTIME = `https://cors-anywhere.herokuapp.com/https://arcotel.ru/doc/stud/${pairDayChanges}.xlsx`
+
+            var req = new XMLHttpRequest();
+            req.open("GET", linkTIME, true);
+            req.responseType = "arraybuffer";
+
+            req.onload = function(e) {
+                var data = new Uint8Array(req.response);
+                var workbook = XLSX.read(data, {type:"array"});
+
+                var list = workbook.Sheets[workbook.SheetNames[0]]
+                var r = XLSX.utils.decode_range("AH5:AI22");
+                document.body.innerHTML += XLSX.utils.sheet_to_html(XLSX.utils.json_to_sheet(XLSX.utils.sheet_to_json(list, {range: r})))
+            }
+            req.send();
+        </script>
+
+        <script>
+            addScript(`static/global.js?t=${Date.now()}`)
+            addScript(`static/updateworker.js?t=${Date.now()}`)
+        </script>
+
+    </body>
+</html>
