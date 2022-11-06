@@ -13,9 +13,9 @@
         <title  id="title-page"                     >КСК-11 | главная</title>
         <link   rel="manifest"                      href="manifest.json">
         
-        <link   rel="preload prefetch stylesheet"   href="static/load.css?cache=400" as="style">
-        <link   rel="preload prefetch stylesheet"   href="static/main.css?cache=400" as="style">
-        <link   rel="icon"                          href="static/g-icon.png?cache=400">
+        <link   rel="preload prefetch stylesheet"   href="static/load.css?cache=399" as="style">
+        <link   rel="preload prefetch stylesheet"   href="static/main.css?cache=399" as="style">
+        <link   rel="icon"                          href="static/g-icon.png?cache=399">
 
         <!-- addScript() -->
         <!--<script type="text/javascript">
@@ -348,7 +348,7 @@
                         <a style="text-decoration: none;" href="${link({type: 'HTML', file: '#/'})}">
                             <div style="display: flex; flex-direction: column; flex-wrap: nowrap; align-items: center;">
                                 <p class="homeANavbar homeAIcon iconNavbar" style="color: var(--icon-color); fill: currentColor; margin: 0; height: 26px;"><span class="material-symbols-rounded" style="font-size: 26px !important;">home</span></p>
-                                <p class="homeANavbar" style="color: var(--icon-color); margin: 0; font-size: 12px; font-family: 'Montserrat';">главная</p>
+                                <p class="homeANavbar" style="color: var(--icon-color); margin: 0; font-size: 14px; font-family: 'Montserrat';">главная</p>
                             </div>
                         </a>
                     </div>
@@ -357,7 +357,7 @@
                         <a style="text-decoration: none;" href="${link({type: 'HTML', file: '#/grades/'})}">
                             <div style="display: flex; flex-direction: column; flex-wrap: nowrap; align-items: center;">
                                 <p class="gradesANavbar gradesAIcon iconNavbar" style="color: var(--icon-color); fill: currentColor; margin: 0; height: 26px;"><span class="material-symbols-rounded" style="font-size: 26px !important;">assignment_turned_in</span></p>
-                                <p class="gradesANavbar" style="color: var(--icon-color); margin: 0; font-size: 12px; font-family: 'Montserrat';">оценки</p>
+                                <p class="gradesANavbar" style="color: var(--icon-color); margin: 0; font-size: 14px; font-family: 'Montserrat';">оценки</p>
                             </div>
                         </a>
                     </div>
@@ -366,7 +366,7 @@
                         <a style="text-decoration: none;" href="${link({type: 'HTML', file: '#/other/'})}">
                             <div style="display: flex; flex-direction: column; flex-wrap: nowrap; align-items: center;">
                                 <p class="otherANavbar otherAIcon iconNavbar" style="color: var(--icon-color); fill: currentColor; margin: 0; height: 26px;"><span class="material-symbols-rounded" style="font-size: 26px !important;">menu</span></p>
-                                <p class="otherANavbar" style="color: var(--icon-color); margin: 0; font-size: 12px; font-family: 'Montserrat';">другое</p>
+                                <p class="otherANavbar" style="color: var(--icon-color); margin: 0; font-size: 14px; font-family: 'Montserrat';">другое</p>
                             </div>
                         </a>
                     </div>
@@ -481,12 +481,14 @@
 
         <!--<iframe style="height: 225px; width: 350px;" src="https://cors-anywhere.herokuapp.com/corsdemo" frameborder="0"></iframe>-->
 
+        <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">Получить доступ к изменениям</a>
+
         <!-- Get changes pair -->
         <script>
             var NextDay = new Date()
-            var pairDayChanges = `${NextDay.getDate() < 10 ? `0` : ``}${NextDay.getDate()}-${NextDay.getMonth() < 9 ? `0` : ``}${NextDay.getMonth() + 1}`
+            var pairDayChanges = `${NextDay.getDate() < 10 ? `0` : ``}${NextDay.getDate()}.${NextDay.getMonth() < 9 ? `0` : ``}${NextDay.getMonth() + 1}`
 
-            var linkTIME = `https://cors-anywhere.herokuapp.com/http://arcotel.ru/new_site/images/upload/studentam/raspisanie-i-grafiki/${pairDayChanges}.xlsx`
+            var linkTIME = `https://cors-anywhere.herokuapp.com/https://arcotel.ru/doc/stud/${pairDayChanges}.xlsx`
             var req = new XMLHttpRequest();
             req.open("GET", linkTIME, true);
             req.responseType = "arraybuffer";
@@ -502,7 +504,7 @@
             }
             
             if (req.status != 200) {    
-                var linkTIME = `https://cors-anywhere.herokuapp.com/http://arcotel.ru/new_site/images/upload/studentam/raspisanie-i-grafiki/${pairDayChanges}.xls`
+                var linkTIME = `https://cors-anywhere.herokuapp.com/https://arcotel.ru/doc/stud/${pairDayChanges}.xls`
                 var req1 = new XMLHttpRequest();
                 req1.open("GET", linkTIME, true);
                 req1.responseType = "arraybuffer";
@@ -525,7 +527,7 @@
 
         <!-- Clear loading div -->
         <script>
-            window.addEventListener('load', function() { document.getElementById('genload').remove() })
+            window.addEventListener('load', async function() { await plutonny.sleep(1000); document.getElementById('genload').remove() })
         </script>
 
         <!-- Update modal work -->
