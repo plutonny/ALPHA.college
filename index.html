@@ -38,25 +38,38 @@
         
         <style  id="root-colors-theme"              >#thMoon, #thSun { display: none; }</style>
 
-        <!-- URLDIR and URLDATA -->
+        <!-- GLOBAL VARIABLES -->
         <script type="text/javascript">
-            try { var URLDIR = window.location.href.split('#')[1].split('/') } catch { console.log('index.html -> no dir information'); var URLDIR = [''] }
-            try { var URLDATA = plutonny.get.URLAttributes(window.location.href) } catch { console.error('index.html -> plutonny.js are not found'); var URLDATA = [''] }
-        </script>
-
-        <!-- General information; link(); WEEK; modal(); capitalise() -->
-        <script type="text/javascript">
-            
             "use strict";
-
+            
             var siteVersion = '4.0.0'
             var siteBuild = '3'
+
+            var WEEKEND = [0, 6]
+            var NUMSEMESTR = 0 // TODO 
     
             var CURRDATE = new Date()
 
             var BETA = window.location.href.toLowerCase().includes('beta')
-            var ALPHA = window.location.href.toLowerCase().includes('alpha')
+            var ALPHA = window.location.href.toLowerCase().includes('alpha') /*delete after*/ || true
 
+            // Week variable: num week and names (EN, RU, alternative)
+            var WEEK = { num: luxon.DateTime.now().weekNumber }
+            WEEK.name = {
+                RU: WEEK.num % 2 == 1 ? 'желтая' : 'зеленая',
+                EN: WEEK.num % 2 == 1 ? 'yellow' : 'green',
+                alt: {
+                    RU: WEEK.num % 2 == 1 ? 'зеленая' : 'желтая',
+                    EN: WEEK.num % 2 == 1 ? 'green' : 'yellow',
+                }
+            }
+
+            try { var URLDIR = window.location.href.split('#')[1].split('/') } catch { console.log('index.html -> no dir information'); var URLDIR = [''] }
+            try { var URLDATA = plutonny.get.URLAttributes(window.location.href) } catch { console.error('index.html -> plutonny.js are not found'); var URLDATA = [''] }
+        </script>
+
+        <!-- link(); WEEK; modal(); capitalise() -->
+        <script type="text/javascript">
             /**
             *      {
             *          type:   str  ('assets' or 'HTML')
@@ -78,17 +91,6 @@
                     }
                 } catch (e) {
                     plutonny.console.error('index.html -> link()', e)
-                }
-            }
-
-            // Week variable: num week and names (EN, RU, alternative)
-            var WEEK = { num: luxon.DateTime.now().weekNumber }
-            WEEK.name = {
-                RU: WEEK.num % 2 == 1 ? 'желтая' : 'зеленая',
-                EN: WEEK.num % 2 == 1 ? 'yellow' : 'green',
-                alt: {
-                    RU: WEEK.num % 2 == 1 ? 'зеленая' : 'желтая',
-                    EN: WEEK.num % 2 == 1 ? 'green' : 'yellow',
                 }
             }
 
@@ -374,6 +376,23 @@
                 </div>
                 `)
             },
+            /**
+             * 
+             *  {
+             *      size: int,
+             *      border: int,
+             *      color: "HEX",
+             *      icon: "in Google symbols",
+             *  }
+             * 
+             */
+            cIcon: function(settings) {
+                return `
+                    <div style="height: ${settings.size}px; width: ${settings.size}px; display: flex; align-content: center; justify-content: center; align-items: center; background-color: ${settings.color}40; border-radius: ${settings.border}px">
+                        <span style="color: ${settings.color}" class="material-symbols-rounded">${settings.icon}</span>
+                    </div>
+                `
+            }
         }
         </script>
 
@@ -389,27 +408,6 @@
                     })
                 } else plutonny.console.warn('global.js -> enableLogger()', 'Service worker is not supported')
             }; enableLogger()
-        </script>
-
-        <!-- cIcon() -->
-        <script>
-            /**
-             * 
-             *  {
-             *      size: int,
-             *      border: int,
-             *      color: "HEX",
-             *      icon: "in Google symbols",
-             *  }
-             * 
-             */
-            function cIcon(settings) {
-                return `
-                    <div style="height: ${settings.size}px; width: ${settings.size}px; display: flex; align-content: center; justify-content: center; align-items: center; background-color: ${settings.color}40; border-radius: ${settings.border}px">
-                        <span style="color: ${settings.color}" class="material-symbols-rounded">${settings.icon}</span>
-                    </div>
-                `
-            }
         </script>
 
     </head>
@@ -462,11 +460,11 @@
                         HTMLAfter: `
                             <div style="display: flex; flex-direction: row; align-content: center; align-items: center; justify-content: center;">
                                     <button class="header" style="display: flex; flex-direction: column; padding: 12px; height: 120px; width: 50%; margin: 6px 3px 6px 6px; border-radius: 20px;" onclick="window.location.href = '/#/timetable/alerts'">
-                                        ${cIcon({size: 36, border: 8, color: "#ff0000", icon: "notifications"})}
+                                        ${FRAMES.cIcon({size: 36, border: 8, color: "#ff0000", icon: "notifications"})}
                                         <p style="margin: 12px 0px 0px 0px; text-align: left; font-size: 18px; font-family: 'Montserrat';">Звонки</p>
                                     </button>
                                     <button class="header" style="display: flex; flex-direction: column; padding: 12px; height: 120px; width: 50%; margin: 6px 6px 6px 3px; border-radius: 20px;" onclick="window.location.href = '/#/timetable/week'">
-                                        ${cIcon({size: 36, border: 8, color: "#0000ff", icon: "calendar_month"})}
+                                        ${FRAMES.cIcon({size: 36, border: 8, color: "#0000ff", icon: "calendar_month"})}
                                         <p style="margin: 12px 0px 0px 0px; text-align: left; font-size: 18px; font-family: 'Montserrat';">Расписание</p>
                                     </button>
                             </div>
