@@ -43,7 +43,7 @@
             "use strict";
             
             var siteVersion = '4.0.0'
-            var siteBuild = '3'
+            var siteBuild = '4'
 
             var WEEKEND = [0, 6]
             var NUMSEMESTR = 0 // TODO 
@@ -120,8 +120,8 @@
             async function modal(content) {
                 try {
                     await plutonny.sleep(200)
-                    if (deviceStorage.getItem('theme') == 'dark')  document.getElementById('theme-color').content = '#2a2a2a'
-                    if (deviceStorage.getItem('theme') == 'light') document.getElementById('theme-color').content = '#9b9b9b'
+                    if (localStorage.getItem('theme') == 'dark')  document.getElementById('theme-color').content = '#2a2a2a'
+                    if (localStorage.getItem('theme') == 'light') document.getElementById('theme-color').content = '#9b9b9b'
                     plutonny.output('modal', `
                         <div class="max-modal">
                             <style>
@@ -235,6 +235,47 @@
                 }
 
             }; theme.load()
+        </script>
+        
+        <!-- getPairsChanges() -->
+        <script>
+            function getPairsChanges(date) {
+                var linkTIME = `https://cors-anywhere.herokuapp.com/https://arcotel.ru/doc/stud/${date}.xlsx`
+                var req = new XMLHttpRequest();
+                req.open("GET", linkTIME, true);
+                req.responseType = "arraybuffer";
+                req.send()
+
+                req.onload = function(e) {
+                    var data = new Uint8Array(req.response);
+                    var workbook = XLSX.read(data, {type:"array"});
+
+                    var list = workbook.Sheets[workbook.SheetNames[0]]
+                    var r = XLSX.utils.decode_range("AH5:AI22");
+                    document.querySelector(".pairChanges").innerHTML = XLSX.utils.sheet_to_html(XLSX.utils.json_to_sheet(XLSX.utils.sheet_to_json(list, {range: r})))
+                }
+                
+                if (req.status != 200) {    
+                    var linkTIME = `https://cors-anywhere.herokuapp.com/https://arcotel.ru/doc/stud/${date}.xls`
+                    var req1 = new XMLHttpRequest();
+                    req1.open("GET", linkTIME, true);
+                    req1.responseType = "arraybuffer";
+                    req1.send()
+
+                    req1.onload = function(e) {
+                        var data = new Uint8Array(req1.response);
+                        var workbook = XLSX.read(data, {type:"array"});
+
+                        var list = workbook.Sheets[workbook.SheetNames[0]]
+                        var r = XLSX.utils.decode_range("AH5:AI22");
+                        document.querySelector(".pairChanges").innerHTML = XLSX.utils.sheet_to_html(XLSX.utils.json_to_sheet(XLSX.utils.sheet_to_json(list, {range: r})))
+                    }
+
+                    if (req1.status != 200) {
+                        document.querySelector(".pairChanges").innerHTML = 'index.html -> getChangesPair', 'no file found. enable cors anywhere'
+                    }
+                }
+            }
         </script>
 
         <!-- FRAMES -->
@@ -415,6 +456,8 @@
 
         <noscript>Включите JavaScript чтобы пользоваться сайтом</noscript>
 
+        <div class="modal" id="modal"></div>
+
         <div id="genload" class="genload">
             <style>
                 .genload {
@@ -479,49 +522,34 @@
 
         <!--<iframe style="height: 225px; width: 350px;" src="https://cors-anywhere.herokuapp.com/corsdemo" frameborder="0"></iframe>-->
 
-        <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">Получить доступ к изменениям</a>
+        <!-- <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">Получить доступ к изменениям</a> -->
 
-        <!-- Get changes pair -->
         <script>
-            var NextDay = new Date()
-            var pairDayChanges = `${NextDay.getDate() < 10 ? `0` : ``}${NextDay.getDate()}.${NextDay.getMonth() < 9 ? `0` : ``}${NextDay.getMonth() + 1}`
+                var today = new Date()
+                var todayChanges = `${today.getDate() < 10 ? `0` : ``}${today.getDate()}.${today.getMonth() < 9 ? `0` : ``}${today.getMonth() + 1}`
+                var tomorrow = new Date()
+                tomorrow.setDate(today.getDate()+1)
+                var tomorrowChanges = `${tomorrow.getDate() < 10 ? `0` : ``}${tomorrow.getDate()}.${tomorrow.getMonth() < 9 ? `0` : ``}${tomorrow.getMonth() + 1}`
 
-            var linkTIME = `https://cors-anywhere.herokuapp.com/https://arcotel.ru/doc/stud/${pairDayChanges}.xlsx`
-            var req = new XMLHttpRequest();
-            req.open("GET", linkTIME, true);
-            req.responseType = "arraybuffer";
-            req.send()
-
-            req.onload = function(e) {
-                var data = new Uint8Array(req.response);
-                var workbook = XLSX.read(data, {type:"array"});
-
-                var list = workbook.Sheets[workbook.SheetNames[0]]
-                var r = XLSX.utils.decode_range("AH5:AI22");
-                document.body.innerHTML += XLSX.utils.sheet_to_html(XLSX.utils.json_to_sheet(XLSX.utils.sheet_to_json(list, {range: r})))
-            }
-            
-            if (req.status != 200) {    
-                var linkTIME = `https://cors-anywhere.herokuapp.com/https://arcotel.ru/doc/stud/${pairDayChanges}.xls`
-                var req1 = new XMLHttpRequest();
-                req1.open("GET", linkTIME, true);
-                req1.responseType = "arraybuffer";
-                req1.send()
-
-                req1.onload = function(e) {
-                    var data = new Uint8Array(req1.response);
-                    var workbook = XLSX.read(data, {type:"array"});
-
-                    var list = workbook.Sheets[workbook.SheetNames[0]]
-                    var r = XLSX.utils.decode_range("AH5:AI22");
-                    document.body.innerHTML += XLSX.utils.sheet_to_html(XLSX.utils.json_to_sheet(XLSX.utils.sheet_to_json(list, {range: r})))
+                function modalCORS() {
+                    modal(`
+                        <div style="margin: 0 18px; max-height: 95%; overflow-y: auto; background-color: var(--bg-color-navbar); border: none; border-radius: 24px; box-shadow: 0px 0px 8px var(--box-shadow-color);">
+                            <h1 style="font-family: 'Montserrat' !important; text-align: center; margin: 16px;">Доступ</h1>
+                            <iframe style="height: 225px; width: 350px;" src="https://cors-anywhere.herokuapp.com/corsdemo" frameborder="0"></iframe>
+                            <div style="display: flex; justify-content: center;">
+                                <button style="cursor: pointer; border: none; border-radius: 24px; height: 36px; font-size: 17px; width: 128px; margin: 4px 16px 16px 16px;" onclick="document.getElementById('modal').innerHTML = ''; theme.load()">закрыть</button>
+                            </div>
+                        </div>
+                    `) 
                 }
-
-                if (req1.status != 200) {
-                    plutonny.console.warn('index.html -> getChangesPair', 'no file found. enable cors anywhere')
-                }
-            }
-        </script>
+                
+            </script>
+        <div class="basicalButtons">
+            <button onclick="modalCORS()">Получить доступ к изменениям</button>
+            <button onclick="getPairsChanges(todayChanges)">Изменения на сегодня</button>
+            <button onclick="getPairsChanges(tomorrowChanges)">Изменения на завтра</button>
+        </div>
+        <div class="pairChanges"></div>
 
         <!-- Clear loading div -->
         <script>
