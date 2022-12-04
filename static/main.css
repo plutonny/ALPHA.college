@@ -44,4 +44,4 @@ button.header:hover { background-color: var(--button-color-hover-header); }
 button.header:active { background-color: var(--button-color-active-header); }
 a:active { color: var(--text-color-active); }
 
-iframe { background-color: #f0f0f0; }
+iframe { background-color: #f5f5f5; }
